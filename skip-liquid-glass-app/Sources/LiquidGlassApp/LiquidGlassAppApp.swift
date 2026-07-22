@@ -31,7 +31,6 @@ let logger: Logger = Logger(subsystem: "skip.liquid.glass.app", category: "Liqui
     }
 
     /* SKIP @bridge */public func onLaunch() {
-//        DemoLib.DroidDexBridge.initialise()
         logger.debug("onLaunch")
     }
 

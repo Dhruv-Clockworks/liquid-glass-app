@@ -12,13 +12,13 @@ let package = Package(
     dependencies: [
         .package(url: "https://source.skip.tools/skip.git", from: "1.9.2"),
 //        .package(url: "https://source.skip.tools/skip-fuse-ui.git", from: "1.0.0"),
-        .package(path: "/Users/dhruvchhatbar/Downloads/Skip projects/demo-lib"),
+//        .package(path: "/Users/dhruvchhatbar/Downloads/Skip projects/demo-lib"),
         .package(path: "/Users/dhruvchhatbar/Desktop/Clockworks/skip-custom-packages/skip-fuse-ui")
     ],
     targets: [
         .target(name: "LiquidGlassApp", dependencies: [
             .product(name: "SkipFuseUI", package: "skip-fuse-ui"),
-            .product(name: "DemoLib", package: "demo-lib"),
+//            .product(name: "DemoLib", package: "demo-lib"),
         ], resources: [.process("Resources")], plugins: [.plugin(name: "skipstone", package: "skip")]),
     ]
 )
