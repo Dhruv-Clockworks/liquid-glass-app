@@ -1,0 +1,22 @@
+# Skip configuration for DemoLib module
+#
+# Kotlin dependencies and Gradle build options for this module can be configured here
+#build:
+#  contents:
+#    - block: 'dependencies'
+#      contents:
+#        - 'implementation("androidx.compose.runtime:runtime")'
+
+# this is a natively-compiled Skip Fuse module
+skip:
+  mode: 'native'
+  bridging:
+    enabled: true
+    options: 'kotlincompat'
+
+build:
+  contents:
+    - block: 'dependencies'
+      contents:
+        - 'implementation("io.github.kyant0:backdrop:1.0.6")'
+        - 'implementation("com.eternal.kits:droid-dex:3.1.0")'

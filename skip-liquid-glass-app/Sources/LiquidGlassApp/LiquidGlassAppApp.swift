@@ -1,5 +1,6 @@
 import Foundation
 import SkipFuse
+import DemoLib
 import SwiftUI
 
 /// A logger for the LiquidGlassApp module.
@@ -13,7 +14,7 @@ let logger: Logger = Logger(subsystem: "skip.liquid.glass.app", category: "Liqui
     }
 
     public var body: some View {
-            IosTabView()
+        DemoLib.SkipGlassTabView()
     }
 }
 
@@ -31,6 +32,7 @@ let logger: Logger = Logger(subsystem: "skip.liquid.glass.app", category: "Liqui
     }
 
     /* SKIP @bridge */public func onLaunch() {
+        DemoLibModule.setupPerformanceMonitoring()
         logger.debug("onLaunch")
     }
 
