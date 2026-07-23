@@ -7,6 +7,9 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -22,11 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,38 +44,73 @@ import com.kyant.backdrop.drawBackdrop
 import com.kyant.backdrop.effects.blur
 import com.kyant.backdrop.effects.lens
 import com.kyant.backdrop.effects.vibrancy
+import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
 
+// A single tab entry: icon, label, and the composable content to display when selected.
+class GlassTab(
+    val icon: ImageVector,
+    val label: String,
+    val content: @Composable () -> Unit
+)
+
+// DSL scope used inside LiquidGlassTabView's content lambda — mirrors SwiftUI's @ViewBuilder tabs.
+class LiquidGlassTabScope {
+    internal val tabs = mutableListOf<GlassTab>()
+
+    fun tabItem(icon: ImageVector, label: String, content: @Composable () -> Unit) {
+        tabs.add(GlassTab(icon = icon, label = label, content = content))
+    }
+}
+
 @Composable
-fun StandaloneLiquidGlassTabBar(modifier: Modifier = Modifier) {
+fun LiquidGlassTabView(
+    modifier: Modifier = Modifier,
+    content: LiquidGlassTabScope.() -> Unit
+) {
+    val scope = remember { LiquidGlassTabScope().apply(content) }
+    val tabs = scope.tabs
+
     val backdrop = rememberLayerBackdrop {
         drawContent()
     }
 
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
 
-    val tabs = remember {
-        listOf(
-            GlassTab(Icons.Filled.Person, "Home1"),
-            GlassTab(Icons.Filled.Search, "Search"),
-            GlassTab(Icons.Filled.Favorite, "Saved"),
-            GlassTab(Icons.Filled.Person, "Profile")
+    Box(modifier = modifier.fillMaxSize()) {
+
+        // Content area: renders the selected tab's composable with a fade transition.
+        AnimatedContent(
+            targetState = selectedIndex,
+            modifier = Modifier
+                .fillMaxSize()
+                .layerBackdrop(backdrop),
+            transitionSpec = {
+                fadeIn(animationSpec = tween(400)) togetherWith fadeOut(animationSpec = tween(400))
+            },
+            label = "TabContentTransition"
+        ) { targetIndex ->
+            if (targetIndex in tabs.indices) {
+                tabs[targetIndex].content()
+            }
+        }
+
+        // Liquid glass tab bar pinned to the bottom.
+        LiquidGlassTabBar(
+            backdrop = backdrop,
+            tabs = tabs,
+            selectedIndex = selectedIndex,
+            onTabSelected = { selectedIndex = it },
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(horizontal = 24.dp, vertical = 32.dp)
         )
     }
-
-    LiquidGlassTabBar(
-        backdrop = backdrop,
-        tabs = tabs,
-        selectedIndex = selectedTab,
-        onTabSelected = { selectedTab = it },
-        modifier = modifier.padding(horizontal = 24.dp, vertical = 32.dp)
-    )
 }
 
-data class GlassTab(val icon: ImageVector, val label: String)
-
 /**
- * The liquid-glass bottom tab bar itself.
+ * The liquid-glass bottom tab bar. Separated so it can be used standalone
+ * when the caller manages its own content and backdrop.
  */
 @Composable
 fun LiquidGlassTabBar(
@@ -104,7 +137,7 @@ fun LiquidGlassTabBar(
             label = "IndicatorOffset"
         )
 
-        // 1. Container glass surface.
+        // Container glass surface.
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -122,7 +155,7 @@ fun LiquidGlassTabBar(
                 )
         )
 
-        // 2. Sliding liquid pill — its own independent glass pass.
+        // Sliding liquid pill for the selected tab.
         Box(
             modifier = Modifier
                 .offset(x = indicatorOffset)
@@ -143,7 +176,7 @@ fun LiquidGlassTabBar(
                 )
         )
 
-        // 3. Foreground icon row.
+        // Foreground icon row.
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceEvenly,

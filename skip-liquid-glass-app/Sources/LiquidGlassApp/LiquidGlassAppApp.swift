@@ -14,7 +14,7 @@ let logger: Logger = Logger(subsystem: "skip.liquid.glass.app", category: "Liqui
     }
 
     public var body: some View {
-        DemoLib.SkipGlassTabView()
+        DemoLib.LiquidGlassTabView()
     }
 }
 
@@ -32,7 +32,6 @@ let logger: Logger = Logger(subsystem: "skip.liquid.glass.app", category: "Liqui
     }
 
     /* SKIP @bridge */public func onLaunch() {
-        DemoLibModule.setupPerformanceMonitoring()
         logger.debug("onLaunch")
     }
 
@@ -56,4 +55,3 @@ let logger: Logger = Logger(subsystem: "skip.liquid.glass.app", category: "Liqui
         logger.debug("onLowMemory")
     }
 }
-

@@ -1,34 +1,23 @@
-//
-//  TabView.swift
-//  demo-lib
-//
-//  Created by Dhruv Chhatbar on 17/07/26.
-//
-
 import Foundation
 import SwiftUI
-
-public struct SkipGlassTabView: View {
-    public init() {}
-    public var body: some View {
-        VStack {
-#if os(iOS)
-            IosTabView()
-#else
-            ComposeView {
-                        LiquidGlassTabScreenComposer(currentDevice: tier.rawValue)
-            }
+#if SKIP
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 #endif
-        }
-    }
-}
 
-struct IosTabView: View {
+// Unified liquid glass tab view.
+// iOS: native TabView with liquid glass styling.
+// Android: Kyant-backed LiquidGlassTabView composable via Skip bridge.
+public struct LiquidGlassTabView: View {
     @State var selectedTab = "Home"
 
-    var body: some View {
-        TabView(selection: $selectedTab) {
+    public init() {}
 
+    public var body: some View {
+#if os(iOS)
+        TabView(selection: $selectedTab) {
             TabPlaygroundContentView(label: "Home", selectedTab: $selectedTab)
                 .tabItem { Label("Home", systemImage: "house.fill") }
                 .tag("Home")
@@ -39,6 +28,11 @@ struct IosTabView: View {
                 .tabItem { Label("Info", systemImage: "info.circle.fill") }
                 .tag("Info")
         }
+#else
+        ComposeView {
+            LiquidGlassAndroidTabComposer()
+        }
+#endif
     }
 }
 
@@ -50,29 +44,32 @@ struct TabPlaygroundContentView: View {
         VStack {
             Text(label).bold()
             if label != "Home" {
-                Button("Switch to Home") {
-                    selectedTab = "Home"
-                }
+                Button("Switch to Home") { selectedTab = "Home" }
             }
             if label != "Favorites" {
-                Button("Switch to Favorites") {
-                    selectedTab = "Favorites"
-                }
+                Button("Switch to Favorites") { selectedTab = "Favorites" }
             }
             if label != "Info" {
-                Button("Switch to Info") {
-                    selectedTab = "Info"
-                }
+                Button("Switch to Info") { selectedTab = "Info" }
             }
         }
     }
 }
-
 #if SKIP
-struct LiquidGlassTabScreenComposer: ContentComposer {
-    let currentDevice: String
+// Bridges to the Kotlin LiquidGlassTabView composable in LiquidBottomBar.kt.
+struct LiquidGlassAndroidTabComposer: ContentComposer {
     @Composable func Compose(context: ComposeContext) {
-        LiquidGlassTabScreen(modifier: context.modifier, currentDevice: currentDevice)
+        demo.lib.LiquidGlassTabView(modifier: context.modifier) {
+            tabItem(icon: Icons.Filled.Home, label: "Home") {
+                TabPlaygroundContentView(label: "Home", selectedTab: .constant("Home"))
+            }
+            tabItem(icon: Icons.Filled.Favorite, label: "Favorites") {
+                TabPlaygroundContentView(label: "Favorites", selectedTab: .constant("Favorites"))
+            }
+            tabItem(icon: Icons.Filled.Info, label: "Info") {
+                TabPlaygroundContentView(label: "Info", selectedTab: .constant("Info"))
+            }
+        }
     }
 }
 #endif
