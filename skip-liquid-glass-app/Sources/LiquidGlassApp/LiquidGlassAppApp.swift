@@ -14,7 +14,7 @@ let logger: Logger = Logger(subsystem: "skip.liquid.glass.app", category: "Liqui
     }
 
     public var body: some View {
-        DemoLib.LiquidGlassTabView()
+        LiteContentView()
     }
 }
 
@@ -55,3 +55,6 @@ let logger: Logger = Logger(subsystem: "skip.liquid.glass.app", category: "Liqui
         logger.debug("onLowMemory")
     }
 }
+/*
+ i have converted demo lib package to skip lite and app is in skip fuse, for understanding you can check LiteContentView, in LiteContentView i have implemented glass tab bar for android, similar to it, i want you to create different ui components in same way like kyant created and showcased
+ */

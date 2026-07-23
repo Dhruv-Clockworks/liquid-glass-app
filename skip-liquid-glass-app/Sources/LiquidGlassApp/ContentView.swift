@@ -1,17 +1,22 @@
 import SwiftUI
+import SkipFuse
 import DemoLib
 
 enum ContentTab: String, Hashable {
     case welcome, home, settings
 }
 
-struct ContentView: View {
+public struct LiteContentView: View {
+    public init () {}
     @AppStorage("tab") var tab = ContentTab.welcome
     @AppStorage("name") var welcomeName = "Skipper"
     @AppStorage("appearance") var appearance = ""
     @State var viewModel = ViewModel()
 
-    var body: some View {
+    public var body: some View {
+        #if os(Android)
+        ComposeView { DemoView(str: $welcomeName) }
+        #else
         TabView(selection: $tab) {
             NavigationStack {
                 WelcomeView(welcomeName: $welcomeName)
@@ -27,7 +32,7 @@ struct ContentView: View {
             .tag(ContentTab.home)
 
             NavigationStack {
-                SettingsView(appearance: $appearance, welcomeName: $welcomeName)
+                SettingsView(welcomeName: $welcomeName)
                     .navigationTitle("Settings")
             }
             .tabItem { Label("Settings", systemImage: "gearshape.fill") }
@@ -35,16 +40,22 @@ struct ContentView: View {
         }
         .environment(viewModel)
         .preferredColorScheme(appearance == "dark" ? .dark : appearance == "light" ? .light : nil)
+        #endif
     }
 }
 
-struct WelcomeView : View {
+public struct WelcomeView : View {
+    public init(heartBeating: Bool = false, welcomeName: Binding<String>) {
+        self.heartBeating = heartBeating
+        self._welcomeName = welcomeName
+    }
     @State var heartBeating = false
     @Binding var welcomeName: String
 
-    var body: some View {
-        VStack(spacing: 0) {
+   public var body: some View {
+        VStack(spacing: 10) {
             Text("Hello [\(welcomeName)](https://skip.dev)!")
+            TextField("Enter Value", text: $welcomeName)
                 .padding()
             Image(systemName: "heart.fill")
                 .foregroundStyle(.red)
@@ -54,9 +65,6 @@ struct WelcomeView : View {
                         heartBeating = true
                     }
                 }
-//            PrimaryButton(title: "Dhruv") {
-//                print("Tapped")
-//            }.modifier(CardModifier())
         }
         .font(.largeTitle)
     }
@@ -137,11 +145,15 @@ struct ItemView : View {
     }
 }
 
-struct SettingsView : View {
+public struct SettingsView : View {
+    public init(welcomeName: Binding<String>) {
+        self._appearance = .constant("")
+        self._welcomeName = welcomeName
+    }
     @Binding var appearance: String
     @Binding var welcomeName: String
 
-    var body: some View {
+    public var body: some View {
         Form {
             TextField("Name", text: $welcomeName)
             Picker("Appearance", selection: $appearance) {
@@ -179,6 +191,34 @@ struct PlatformHeartView : View {
 struct HeartComposer : ContentComposer {
     @Composable func Compose(context: ComposeContext) {
         androidx.compose.material3.Text("💚", modifier: context.modifier)
+    }
+}
+#endif
+
+#if SKIP
+struct DemoView: ContentComposer {
+    var str: Binding<String>
+    
+    @Composable func Compose(context: ComposeContext) {
+        LiquidGlassTabView {
+            tabItem(
+                icon: LiquidIcons.welcome,
+                label: "Welcome"
+            ) {
+                NavigationStack {
+                    WelcomeView(welcomeName: str)
+                }.Compose()
+            }
+            tabItem(
+                icon: LiquidIcons.settings,
+                label: "Settings"
+            ) {
+                NavigationStack {
+                    SettingsView(welcomeName: str)
+                        .navigationTitle("Settings")
+                }.Compose()
+            }
+        }
     }
 }
 #endif

@@ -1,5 +1,4 @@
 import Foundation
-import SkipFuse
 import SwiftUI
 
 public class DemoLibModule {
@@ -24,7 +23,6 @@ public enum DevicePerformanceTier: String {
     case low = "LOW"
 }
 
-let pLogger: Logger = Logger(subsystem: "demo-lib", category: "Performance")
 
 
 //extension DemoLibModule {

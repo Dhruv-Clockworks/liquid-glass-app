@@ -39,6 +39,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+
 import com.kyant.backdrop.Backdrop
 import com.kyant.backdrop.drawBackdrop
 import com.kyant.backdrop.effects.blur
@@ -46,6 +51,13 @@ import com.kyant.backdrop.effects.lens
 import com.kyant.backdrop.effects.vibrancy
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
+
+// Icon constants for use from Swift #if SKIP blocks — avoids fully-qualified extension resolution.
+object LiquidIcons {
+    val welcome = Icons.Filled.Favorite
+    val home = Icons.Filled.Home
+    val settings = Icons.Filled.Settings
+}
 
 // A single tab entry: icon, label, and the composable content to display when selected.
 class GlassTab(
@@ -150,7 +162,7 @@ fun LiquidGlassTabBar(
                         lens(16f.dp.toPx(), 32f.dp.toPx(), true)
                     },
                     onDrawSurface = {
-                        drawRect(Color.White.copy(alpha = 0.18f))
+                        drawRect(Color(0xFF4CAF50).copy(alpha = 0.18f))
                     }
                 )
         )
@@ -171,7 +183,7 @@ fun LiquidGlassTabBar(
                         lens(10f.dp.toPx(), 22f.dp.toPx(), true)
                     },
                     onDrawSurface = {
-                        drawRect(Color.White.copy(alpha = 0.38f))
+                        drawRect(Color(0xFF69F0AE).copy(alpha = 0.38f))
                     }
                 )
         )
@@ -195,7 +207,7 @@ fun LiquidGlassTabBar(
                 )
 
                 val iconColor by animateColorAsState(
-                    targetValue = if (isSelected) Color.White else Color.White.copy(alpha = 0.5f),
+                    targetValue = if (isSelected) Color(0xFFE8F5E9) else Color(0xFFE8F5E9).copy(alpha = 0.55f),
                     animationSpec = tween(durationMillis = 250),
                     label = "IconColor"
                 )

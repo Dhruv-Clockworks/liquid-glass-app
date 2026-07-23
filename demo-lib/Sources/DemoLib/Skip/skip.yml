@@ -9,11 +9,8 @@
 
 # this is a natively-compiled Skip Fuse module
 skip:
-  mode: 'native'
-  bridging:
-    enabled: true
-    options: 'kotlincompat'
-
+  mode: 'transpiled'
+  
 build:
   contents:
     - block: 'dependencies'
