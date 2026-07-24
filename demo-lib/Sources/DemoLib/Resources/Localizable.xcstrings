@@ -213,6 +213,7 @@
     },
     "Hello [%@](https://skip.dev)!" : {
       "comment" : "Welcome tab contents",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -362,6 +363,7 @@
     },
     "Powered by [Skip](https://skip.dev)" : {
       "comment" : "Link markdown text for the Powered by… label",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -511,6 +513,7 @@
     },
     "Version %@ (%@)" : {
       "comment" : "Settings label showing the current version of the app",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

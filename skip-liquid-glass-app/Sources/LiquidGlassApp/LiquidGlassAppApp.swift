@@ -1,10 +1,10 @@
 import Foundation
-import SkipFuse
+// import SkipFuse
 import DemoLib
 import SwiftUI
 
-/// A logger for the LiquidGlassApp module.
-let logger: Logger = Logger(subsystem: "skip.liquid.glass.app", category: "LiquidGlassApp")
+/// A // logger for the LiquidGlassApp module.
+//let // logger: // logger = // logger(subsystem: "skip.liquid.glass.app", category: "LiquidGlassApp")
 
 /// The shared top-level view for the app, loaded from the platform-specific App delegates below.
 ///
@@ -28,31 +28,31 @@ let logger: Logger = Logger(subsystem: "skip.liquid.glass.app", category: "Liqui
     }
 
     /* SKIP @bridge */public func onInit() {
-        logger.debug("onInit")
+        // logger.debug("onInit")
     }
 
     /* SKIP @bridge */public func onLaunch() {
-        logger.debug("onLaunch")
+        // logger.debug("onLaunch")
     }
 
     /* SKIP @bridge */public func onResume() {
-        logger.debug("onResume")
+        // logger.debug("onResume")
     }
 
     /* SKIP @bridge */public func onPause() {
-        logger.debug("onPause")
+        // logger.debug("onPause")
     }
 
     /* SKIP @bridge */public func onStop() {
-        logger.debug("onStop")
+        // logger.debug("onStop")
     }
 
     /* SKIP @bridge */public func onDestroy() {
-        logger.debug("onDestroy")
+        // logger.debug("onDestroy")
     }
 
     /* SKIP @bridge */public func onLowMemory() {
-        logger.debug("onLowMemory")
+        // logger.debug("onLowMemory")
     }
 }
 /*

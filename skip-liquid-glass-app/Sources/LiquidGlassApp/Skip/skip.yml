@@ -9,12 +9,15 @@
 
 # this is a natively-compiled Skip Fuse module
 skip:
-  mode: 'native'
+  mode: 'transpiled'
   
-  bridging: true
+  bridging:
+      auto: true
+    enabled: 'kotlincompat'
+
   build:
   contents:
     - block: 'dependencies'
       contents:
-#        - 'implementation("io.github.kyant0:backdrop:1.0.6")'
+
 

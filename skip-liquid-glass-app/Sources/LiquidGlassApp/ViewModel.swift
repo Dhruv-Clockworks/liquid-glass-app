@@ -1,6 +1,6 @@
 import Foundation
 import Observation
-import SkipFuse
+// import SkipFuse
 
 /// The Observable ViewModel used by the application.
 @Observable public class ViewModel {
@@ -67,12 +67,12 @@ extension ViewModel {
             let data = try Data(contentsOf: savePath)
             defer {
                 let end = Date.now
-                logger.info("loaded \(data.count) bytes from \(Self.savePath.path) in \(end.timeIntervalSince(start)) seconds")
+                // logger.info("loaded \(data.count) bytes from \(Self.savePath.path) in \(end.timeIntervalSince(start)) seconds")
             }
             return try JSONDecoder().decode([Item].self, from: data)
         } catch {
             // perhaps the first launch, or the data could not be read
-            logger.warning("failed to load data from \(Self.savePath), using defaultItems: \(error)")
+            // logger.warning("failed to load data from \(Self.savePath), using defaultItems: \(error)")
             let defaultItems = (1...365).map { Date(timeIntervalSinceNow: Double($0 * 60 * 60 * 24 * -1)) }
             return defaultItems.map({ Item(date: $0) })
         }
@@ -85,9 +85,9 @@ extension ViewModel {
             try FileManager.default.createDirectory(at: URL.applicationSupportDirectory, withIntermediateDirectories: true)
             try data.write(to: Self.savePath)
             let end = Date.now
-            logger.info("saved \(data.count) bytes to \(Self.savePath.path) in \(end.timeIntervalSince(start)) seconds")
+            // logger.info("saved \(data.count) bytes to \(Self.savePath.path) in \(end.timeIntervalSince(start)) seconds")
         } catch {
-            logger.error("error saving data: \(error)")
+            // logger.error("error saving data: \(error)")
         }
     }
 }

@@ -27,8 +27,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.MaterialTheme
 import androidx.core.app.ActivityCompat
 
-internal val logger: SkipLogger = SkipLogger(subsystem = "liquid.glass.app", category = "LiquidGlassApp")
-
 private typealias AppRootView = LiquidGlassAppRootView
 private typealias AppDelegate = LiquidGlassAppAppDelegate
 
@@ -39,7 +37,7 @@ open class AndroidAppMain: Application {
 
     override fun onCreate() {
         super.onCreate()
-        logger.info("starting app")
+        // logger.info("starting app")
         ProcessInfo.launch(applicationContext)
         AppDelegate.shared.onInit()
     }
@@ -55,7 +53,7 @@ open class MainActivity: AppCompatActivity {
 
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
-        logger.info("starting activity")
+        // logger.info("starting activity")
         UIApplication.launch(this)
         enableEdgeToEdge()
 
@@ -82,7 +80,7 @@ open class MainActivity: AppCompatActivity {
     }
 
     override fun onStart() {
-        logger.info("onStart")
+        // logger.info("onStart")
         super.onStart()
     }
 
@@ -112,7 +110,7 @@ open class MainActivity: AppCompatActivity {
     }
 
     override fun onRestart() {
-        logger.info("onRestart")
+        // logger.info("onRestart")
         super.onRestart()
     }
 
@@ -120,13 +118,13 @@ open class MainActivity: AppCompatActivity {
 
     override fun onRestoreInstanceState(bundle: android.os.Bundle) {
         // Usually you restore your state in onCreate(). It is possible to restore it in onRestoreInstanceState() as well, but not very common. (onRestoreInstanceState() is called after onStart(), whereas onCreate() is called before onStart().
-        logger.info("onRestoreInstanceState")
+        // logger.info("onRestoreInstanceState")
         super.onRestoreInstanceState(bundle)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: kotlin.Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        logger.info("onRequestPermissionsResult: ${requestCode}")
+        // logger.info("onRequestPermissionsResult: ${requestCode}")
     }
 
     companion object {

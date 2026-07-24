@@ -1,9 +1,97 @@
 import SwiftUI
-import SkipFuse
+// import SkipFuse
 import DemoLib
 
-enum ContentTab: String, Hashable {
+public enum ContentTab: String, Hashable {
     case welcome, home, settings
+}
+
+#if os(Android)
+typealias MyTabView = DemoTabView
+#else
+typealias MyTabView = TabView
+#endif
+public struct fourr: View {
+    @Binding var welcomeName: String
+    public init (welcomeName: Binding<String>) {
+        self._welcomeName = welcomeName
+    }
+    public var body: some View {
+        MyTabView {
+            Tab {
+                NavigationStack {
+                    WelcomeView(welcomeName: $welcomeName)
+                }
+            }
+            Tab {
+                NavigationStack {
+                    WelcomeView(welcomeName: $welcomeName)
+                }
+            }
+            Tab {
+                NavigationStack {
+                    SettingsView(welcomeName: $welcomeName)
+                        .navigationTitle("Settings")
+                }
+            }
+            Tab {
+                NavigationStack {
+                    SettingsView(welcomeName: $welcomeName)
+                        .navigationTitle("Settings")
+                }
+            }
+        }
+        .padding(.bottom, 50)
+    }
+}
+public struct threee: View {
+    @Binding var welcomeName: String
+    public init (welcomeName: Binding<String>) {
+        self._welcomeName = welcomeName
+    }
+    public var body: some View {
+        MyTabView {
+            Tab {
+                NavigationStack {
+                    WelcomeView(welcomeName: $welcomeName)
+                }
+            }
+            Tab {
+                NavigationStack {
+                    WelcomeView(welcomeName: $welcomeName)
+                }
+            }
+            Tab {
+                NavigationStack {
+                    SettingsView(welcomeName: $welcomeName)
+                        .navigationTitle("Settings")
+                }
+            }
+        }
+        .padding(.bottom, 50)
+    }
+}
+public struct twoo: View {
+    @Binding var welcomeName: String
+    public init (welcomeName: Binding<String>) {
+        self._welcomeName = welcomeName
+    }
+    public var body: some View {
+        MyTabView {
+            Tab {
+                NavigationStack {
+                    WelcomeView(welcomeName: $welcomeName)
+                }
+            }
+            Tab {
+                NavigationStack {
+                    SettingsView(welcomeName: $welcomeName)
+                        .navigationTitle("Settings")
+                }
+            }
+        }
+        .padding(.bottom, 50)
+    }
 }
 
 public struct LiteContentView: View {
@@ -14,33 +102,32 @@ public struct LiteContentView: View {
     @State var viewModel = ViewModel()
 
     public var body: some View {
-        #if os(Android)
-        ComposeView { DemoView(str: $welcomeName) }
-        #else
-        TabView(selection: $tab) {
-            NavigationStack {
-                WelcomeView(welcomeName: $welcomeName)
+        
+        MyTabView(selection: $tab) {
+            Tab("423424242342", systemImage: "house.fill", value: ContentTab.home) {
+                fourr(welcomeName: $welcomeName)
             }
-            .tabItem { Label("Welcome", systemImage: "heart.fill") }
-            .tag(ContentTab.welcome)
-
-            NavigationStack {
-                ItemListView()
-                    .navigationTitle(Text("\(viewModel.items.count) Items"))
+            Tab("323123", systemImage: "house.fill", value: ContentTab.welcome) {
+                threee(welcomeName: $welcomeName)
             }
-            .tabItem { Label("Home", systemImage: "house.fill") }
-            .tag(ContentTab.home)
-
-            NavigationStack {
-                SettingsView(welcomeName: $welcomeName)
-                    .navigationTitle("Settings")
+            Tab("2", systemImage: "house.fill", value: ContentTab.settings) {
+                twoo(welcomeName: $welcomeName)
             }
-            .tabItem { Label("Settings", systemImage: "gearshape.fill") }
-            .tag(ContentTab.settings)
         }
-        .environment(viewModel)
-        .preferredColorScheme(appearance == "dark" ? .dark : appearance == "light" ? .light : nil)
-        #endif
+        
+//        MyTabView(selection: $tab) {
+//            Tab("Welcome", systemImage: "heart.fill", value: ContentTab.welcome) {
+//                NavigationStack {
+//                    WelcomeView(welcomeName: $welcomeName)
+//                }
+//            }
+//            Tab("Settings", systemImage: "gearshape.fill", value: ContentTab.settings) {
+//                NavigationStack {
+//                    SettingsView(welcomeName: $welcomeName)
+//                        .navigationTitle("Settings")
+//                }
+//            }
+//        }
     }
 }
 
@@ -53,20 +140,24 @@ public struct WelcomeView : View {
     @Binding var welcomeName: String
 
    public var body: some View {
-        VStack(spacing: 10) {
-            Text("Hello [\(welcomeName)](https://skip.dev)!")
-            TextField("Enter Value", text: $welcomeName)
-                .padding()
-            Image(systemName: "heart.fill")
-                .foregroundStyle(.red)
-                .scaleEffect(heartBeating ? 1.5 : 1.0)
-                .task {
-                    withAnimation(.easeInOut(duration: 1).repeatForever()) {
-                        heartBeating = true
-                    }
-                }
-        }
-        .font(.largeTitle)
+       ZStack {
+           Color.green
+           VStack(spacing: 10) {
+               Text("Hello [\(welcomeName)](https://skip.dev)!")
+               TextField("Enter Value", text: $welcomeName)
+                   .padding()
+               Image(systemName: "heart.fill")
+                   .foregroundStyle(.red)
+                   .scaleEffect(heartBeating ? 1.5 : 1.0)
+                   .task {
+                       withAnimation(.easeInOut(duration: 1).repeatForever()) {
+                           heartBeating = true
+                       }
+                   }
+           }
+           .font(.largeTitle)
+       }
+       .ignoresSafeArea()
     }
 }
 
@@ -147,20 +238,14 @@ struct ItemView : View {
 
 public struct SettingsView : View {
     public init(welcomeName: Binding<String>) {
-        self._appearance = .constant("")
         self._welcomeName = welcomeName
     }
-    @Binding var appearance: String
     @Binding var welcomeName: String
 
     public var body: some View {
         Form {
             TextField("Name", text: $welcomeName)
-            Picker("Appearance", selection: $appearance) {
-                Text("System").tag("")
-                Text("Light").tag("light")
-                Text("Dark").tag("dark")
-            }
+            
             if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
                let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
                 Text("Version \(version) (\(buildNumber))")
@@ -196,17 +281,41 @@ struct HeartComposer : ContentComposer {
 #endif
 
 #if SKIP
-struct DemoView: ContentComposer {
-    var str: Binding<String>
-    
+//struct DemoView: ContentComposer {
+//    var str: Binding<String>
+//    
+//    @Composable func Compose(context: ComposeContext) {
+//        LiquidGlassTabView {
+//            tabItem(
+//                icon: LiquidIcons.welcome,
+//                label: "Welcome"
+//            ) {
+//                NavigationStack {
+//                    WelcomeView(welcomeName: str)
+//                }.Compose()
+//            }
+//            tabItem(
+//                icon: LiquidIcons.settings,
+//                label: "Settings"
+//            ) {
+//                NavigationStack {
+//                    SettingsView(welcomeName: str)
+//                        .navigationTitle("Settings")
+//                }.Compose()
+//            }
+//        }
+//    }
+//}
+/*
+struct DemoViewLite: ContentComposer {
     @Composable func Compose(context: ComposeContext) {
-        LiquidGlassTabView {
+        demo.lib.LiquidGlassTabView {
             tabItem(
                 icon: LiquidIcons.welcome,
                 label: "Welcome"
             ) {
                 NavigationStack {
-                    WelcomeView(welcomeName: str)
+                    Text("ASd")
                 }.Compose()
             }
             tabItem(
@@ -214,11 +323,11 @@ struct DemoView: ContentComposer {
                 label: "Settings"
             ) {
                 NavigationStack {
-                    SettingsView(welcomeName: str)
-                        .navigationTitle("Settings")
+                    Text("sdasdasd")
                 }.Compose()
             }
         }
     }
 }
+ */
 #endif
