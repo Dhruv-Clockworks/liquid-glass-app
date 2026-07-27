@@ -174,7 +174,27 @@ public struct DemoTabView : View, SkipUI.Renderable {
     }
     
     @Composable func createTabBar(_ tabs: kotlin.collections.List<Tab?>, context: skip.ui.ComposeContext) {
-        demo.lib.LiquidGlassTabView {
+        var initialIndex = 0
+        if let sel = selection {
+            let selValue = sel.get()
+            for i in 0..<tabs.size {
+                if let tab = tabs[i], let tabValue = tab.value {
+                    if tabValue == selValue {
+                        initialIndex = i
+                        break
+                    }
+                }
+            }
+        }
+
+        demo.lib.LiquidGlassTabView(
+            selectedIndex: initialIndex,
+            onTabSelected: { index in
+                if let tab = tabs[index], let tabValue = tab.value {
+                    selection?.set(tabValue)
+                }
+            }
+        ) {
             for tabIndex in 0..<tabs.size {
                 if let tab = tabs[tabIndex] {
                     tabItem(

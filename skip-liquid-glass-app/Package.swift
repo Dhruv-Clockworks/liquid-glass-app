@@ -11,14 +11,14 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://source.skip.tools/skip.git", from: "1.9.2"),
-        .package(url: "https://source.skip.tools/skip-ui.git", from: "1.0.0"),
+//        .package(url: "https://source.skip.tools/skip-ui.git", from: "1.0.0"),
         .package(path: "/Users/dhruvchhatbar/Desktop/Clockworks/liquid-glass-app/demo-lib"),
         
     ],
     targets: [
         .target(name: "LiquidGlassApp", dependencies: [
             .product(name: "DemoLib", package: "demo-lib"),
-            .product(name: "SkipUI", package: "skip-ui"),
+//            .product(name: "SkipUI", package: "skip-ui"),
         ], resources: [.process("Resources")], plugins: [.plugin(name: "skipstone", package: "skip")]),
     ]
 )

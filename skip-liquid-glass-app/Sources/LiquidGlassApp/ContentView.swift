@@ -11,123 +11,41 @@ typealias MyTabView = DemoTabView
 #else
 typealias MyTabView = TabView
 #endif
-public struct fourr: View {
-    @Binding var welcomeName: String
-    public init (welcomeName: Binding<String>) {
-        self._welcomeName = welcomeName
-    }
-    public var body: some View {
-        MyTabView {
-            Tab {
-                NavigationStack {
-                    WelcomeView(welcomeName: $welcomeName)
-                }
-            }
-            Tab {
-                NavigationStack {
-                    WelcomeView(welcomeName: $welcomeName)
-                }
-            }
-            Tab {
-                NavigationStack {
-                    SettingsView(welcomeName: $welcomeName)
-                        .navigationTitle("Settings")
-                }
-            }
-            Tab {
-                NavigationStack {
-                    SettingsView(welcomeName: $welcomeName)
-                        .navigationTitle("Settings")
-                }
-            }
-        }
-        .padding(.bottom, 50)
-    }
-}
-public struct threee: View {
-    @Binding var welcomeName: String
-    public init (welcomeName: Binding<String>) {
-        self._welcomeName = welcomeName
-    }
-    public var body: some View {
-        MyTabView {
-            Tab {
-                NavigationStack {
-                    WelcomeView(welcomeName: $welcomeName)
-                }
-            }
-            Tab {
-                NavigationStack {
-                    WelcomeView(welcomeName: $welcomeName)
-                }
-            }
-            Tab {
-                NavigationStack {
-                    SettingsView(welcomeName: $welcomeName)
-                        .navigationTitle("Settings")
-                }
-            }
-        }
-        .padding(.bottom, 50)
-    }
-}
-public struct twoo: View {
-    @Binding var welcomeName: String
-    public init (welcomeName: Binding<String>) {
-        self._welcomeName = welcomeName
-    }
-    public var body: some View {
-        MyTabView {
-            Tab {
-                NavigationStack {
-                    WelcomeView(welcomeName: $welcomeName)
-                }
-            }
-            Tab {
-                NavigationStack {
-                    SettingsView(welcomeName: $welcomeName)
-                        .navigationTitle("Settings")
-                }
-            }
-        }
-        .padding(.bottom, 50)
-    }
-}
 
 public struct LiteContentView: View {
     public init () {}
-    @AppStorage("tab") var tab = ContentTab.welcome
+    @State var tab = ContentTab.settings
     @AppStorage("name") var welcomeName = "Skipper"
     @AppStorage("appearance") var appearance = ""
     @State var viewModel = ViewModel()
 
     public var body: some View {
         
-        MyTabView(selection: $tab) {
-            Tab("423424242342", systemImage: "house.fill", value: ContentTab.home) {
-                fourr(welcomeName: $welcomeName)
-            }
-            Tab("323123", systemImage: "house.fill", value: ContentTab.welcome) {
-                threee(welcomeName: $welcomeName)
-            }
-            Tab("2", systemImage: "house.fill", value: ContentTab.settings) {
-                twoo(welcomeName: $welcomeName)
-            }
-        }
-        
 //        MyTabView(selection: $tab) {
-//            Tab("Welcome", systemImage: "heart.fill", value: ContentTab.welcome) {
-//                NavigationStack {
-//                    WelcomeView(welcomeName: $welcomeName)
-//                }
+//            Tab("423424242342", systemImage: "house.fill", value: ContentTab.home) {
+//                fourr(welcomeName: $welcomeName)
 //            }
-//            Tab("Settings", systemImage: "gearshape.fill", value: ContentTab.settings) {
-//                NavigationStack {
-//                    SettingsView(welcomeName: $welcomeName)
-//                        .navigationTitle("Settings")
-//                }
+//            Tab("323123", systemImage: "house.fill", value: ContentTab.welcome) {
+//                threee(welcomeName: $welcomeName)
+//            }
+//            Tab("2", systemImage: "house.fill", value: ContentTab.settings) {
+//                twoo(welcomeName: $welcomeName)
 //            }
 //        }
+        
+        MyTabView(selection: $tab) {
+            Tab("Welcome", systemImage: "heart.fill", value: ContentTab.welcome) {
+                NavigationStack {
+                    WelcomeView(welcomeName: $welcomeName)
+                }
+            }
+            Tab("Settings", systemImage: "gearshape.fill", value: ContentTab.settings) {
+                NavigationStack {
+                    SettingsView(welcomeName: $welcomeName, tab: $tab)
+                        .navigationTitle("Settings")
+                }
+            }
+        }
     }
 }
 
@@ -237,9 +155,11 @@ struct ItemView : View {
 }
 
 public struct SettingsView : View {
-    public init(welcomeName: Binding<String>) {
+    public init(welcomeName: Binding<String>, tab: Binding<ContentTab>) {
         self._welcomeName = welcomeName
+        self._tab = tab
     }
+    @Binding var tab: ContentTab
     @Binding var welcomeName: String
 
     public var body: some View {
@@ -254,6 +174,15 @@ public struct SettingsView : View {
                 PlatformHeartView()
                 Text("Powered by [Skip](https://skip.dev)")
             }
+            Button("change to welcome") {
+                tab = .welcome
+            }
+            #if !SKIP
+            Button("Glass") {
+            }.buttonStyle(.glass)
+            Button("GlassProminent") {
+            }.buttonStyle(.glassProminent)
+            #endif
         }
     }
 }

@@ -106,6 +106,8 @@ class LiquidGlassTabScope {
 @Composable
 fun LiquidGlassTabView(
     modifier: Modifier = Modifier,
+    selectedIndex: Int = 0,
+    onTabSelected: ((Int) -> Unit)? = null,
     content: LiquidGlassTabScope.() -> Unit
 ) {
     val scope = remember { LiquidGlassTabScope().apply(content) }
@@ -113,11 +115,16 @@ fun LiquidGlassTabView(
     if (tabs.isEmpty()) return
 
     val backdrop = rememberLayerBackdrop { drawContent() }
-    var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
+    var currentIndex by rememberSaveable { mutableIntStateOf(selectedIndex) }
+
+    // React to externally driven selection changes (e.g. @AppStorage binding).
+    LaunchedEffect(selectedIndex) {
+        if (selectedIndex != currentIndex) currentIndex = selectedIndex
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         AnimatedContent(
-            targetState = selectedIndex,
+            targetState = currentIndex,
             modifier = Modifier.fillMaxSize().layerBackdrop(backdrop),
             transitionSpec = {
                 fadeIn(animationSpec = tween(400)) togetherWith fadeOut(animationSpec = tween(400))
@@ -144,8 +151,11 @@ fun LiquidGlassTabView(
             LiquidGlassTabBar(
                 backdrop = backdrop,
                 tabs = tabs,
-                selectedIndex = selectedIndex,
-                onTabSelected = { selectedIndex = it },
+                selectedIndex = currentIndex,
+                onTabSelected = { index ->
+                    currentIndex = index
+                    onTabSelected?.invoke(index)
+                },
                 modifier = Modifier.width(barWidth)
             )
         }
@@ -294,16 +304,8 @@ fun LiquidGlassTabBar(
                 val proximity = (1f - abs(anim.value - index.toFloat())).coerceIn(0f, 1f)
                 val isSelected = index == anim.value.roundToInt()
 
-                val iconScale by animateFloatAsState(
-                    targetValue = 0.9f + proximity * 0.35f,
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessLow
-                    ),
-                    label = "Scale_$index"
-                )
                 val iconAlpha by animateFloatAsState(
-                    targetValue = if (isSelected) 1f else 0.5f,
+                    targetValue = (1f - proximity) * 0.5f,
                     animationSpec = tween(durationMillis = 200),
                     label = "Alpha_$index"
                 )
@@ -325,8 +327,7 @@ fun LiquidGlassTabBar(
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(2.dp),
-                            modifier = Modifier.scale(iconScale)
+                            verticalArrangement = Arrangement.spacedBy(2.dp)
                         ) {
                             Box(modifier = Modifier.size(24.dp)) { tab.icon() }
                             tab.title()
