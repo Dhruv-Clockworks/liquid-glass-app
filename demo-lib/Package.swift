@@ -11,7 +11,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://source.skip.tools/skip.git", from: "1.9.2"),
-        .package(path: "/Users/dhruvchhatbar/Desktop/Clockworks/liquid-glass-app/skip-ui"),
+        .package(path: "/Users/dhruvchhatbar/Desktop/Clockworks/skip-custom-packages/skip-ui"),
 //        .package(url: "https://source.skip.tools/skip-ui.git", from: "1.0.0"),
 //        .package(url: "https://source.skip.tools/skip-fuse.git", from: "1.0.0")
     ],

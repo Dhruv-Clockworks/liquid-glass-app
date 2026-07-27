@@ -105,19 +105,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlin.math.abs
 
-//#Dhruv
-import com.kyant.backdrop.Backdrop
-import com.kyant.backdrop.backdrops.rememberLayerBackdrop
-import com.kyant.backdrop.backdrops.layerBackdrop
-import com.kyant.backdrop.drawBackdrop
-import com.kyant.backdrop.effects.blur
-import com.kyant.backdrop.effects.lens
-import com.kyant.backdrop.effects.vibrancy
-import com.kyant.backdrop.highlight.Highlight
-
-import com.kyant.backdrop.backdrops.rememberCombinedBackdrop
-import com.kyant.backdrop.backdrops.rememberLayerBackdrop
-import com.kyant.backdrop.shadow.__
 #endif
 
 // SKIP @bridge
@@ -145,7 +132,7 @@ public struct DemoTabView : View, SkipUI.Renderable {
         self.content = ComposeBuilder.from { bridgedContent }
     }
     
-    #if SKIP
+#if SKIP
     @Composable private func EvaluateContent(context: skip.ui.ComposeContext) -> kotlin.collections.List<skip.ui.Renderable> {
         // Evaluate our content without recursively evaluating every custom tab view. We only want to fully
         // evaluate views when we render them
@@ -153,11 +140,11 @@ public struct DemoTabView : View, SkipUI.Renderable {
         let renderables = content.Evaluate(context: context, options: options)
         var tabContent: kotlin.collections.MutableList<Renderable> = mutableListOf()
         for renderable in renderables {
-                tabContent.add(renderable)
+            tabContent.add(renderable)
         }
         return tabContent
     }
-
+    
     @Composable override func Render(context: skip.ui.ComposeContext) {
         let tabContext = context.content()
         let tabRenderables = EvaluateContent(context: tabContext)
@@ -187,7 +174,7 @@ public struct DemoTabView : View, SkipUI.Renderable {
             }
         }
 
-        demo.lib.LiquidGlassTabView(
+        skip.ui.LiquidGlassTabView(
             selectedIndex: initialIndex,
             onTabSelected: { index in
                 if let tab = tabs[index], let tabValue = tab.value {

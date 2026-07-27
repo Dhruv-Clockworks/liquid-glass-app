@@ -1,6 +1,5 @@
 import SwiftUI
 // import SkipFuse
-import DemoLib
 
 public enum ContentTab: String, Hashable {
     case welcome, home, settings
@@ -174,15 +173,20 @@ public struct SettingsView : View {
                 PlatformHeartView()
                 Text("Powered by [Skip](https://skip.dev)")
             }
-            Button("change to welcome") {
-                tab = .welcome
+            VStack(spacing: 20) {
+                Button("Glass") {
+                    tab = .welcome
+                }
+                .buttonStyle(.glass)
+                
+                Button("GlassProminent") {
+                    
+                }
+                .tint(.yellow)
+                .foregroundStyle(.red)
+                .buttonStyle(.glassProminent)
             }
-            #if !SKIP
-            Button("Glass") {
-            }.buttonStyle(.glass)
-            Button("GlassProminent") {
-            }.buttonStyle(.glassProminent)
-            #endif
+            .background(.gray)
         }
     }
 }
