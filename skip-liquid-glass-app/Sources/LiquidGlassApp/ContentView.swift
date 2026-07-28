@@ -19,19 +19,7 @@ public struct LiteContentView: View {
     @State var viewModel = ViewModel()
 
     public var body: some View {
-        
-//        MyTabView(selection: $tab) {
-//            Tab("423424242342", systemImage: "house.fill", value: ContentTab.home) {
-//                fourr(welcomeName: $welcomeName)
-//            }
-//            Tab("323123", systemImage: "house.fill", value: ContentTab.welcome) {
-//                threee(welcomeName: $welcomeName)
-//            }
-//            Tab("2", systemImage: "house.fill", value: ContentTab.settings) {
-//                twoo(welcomeName: $welcomeName)
-//            }
-//        }
-        
+                
         MyTabView(selection: $tab) {
             Tab("Welcome", systemImage: "heart.fill", value: ContentTab.welcome) {
                 NavigationStack {
@@ -39,10 +27,8 @@ public struct LiteContentView: View {
                 }
             }
             Tab("Settings", systemImage: "gearshape.fill", value: ContentTab.settings) {
-                NavigationStack {
-                    SettingsView(welcomeName: $welcomeName, tab: $tab)
+                SettingsView(welcomeName: $welcomeName, tab: $tab)
                         .navigationTitle("Settings")
-                }
             }
         }
     }
@@ -74,82 +60,8 @@ public struct WelcomeView : View {
            }
            .font(.largeTitle)
        }
+//       .navigationSubtitle("sub title asdasdasd")
        .ignoresSafeArea()
-    }
-}
-
-struct ItemListView : View {
-    @Environment(ViewModel.self) var viewModel: ViewModel
-
-    var body: some View {
-        List {
-            ForEach(viewModel.items) { item in
-                NavigationLink(value: item) {
-                    Label {
-                        Text(item.itemTitle)
-                    } icon: {
-                        if item.favorite {
-                            Image(systemName: "star.fill")
-                                .foregroundStyle(.yellow)
-                        }
-                    }
-                }
-            }
-            .onDelete { offsets in
-                viewModel.items.remove(atOffsets: offsets)
-            }
-            .onMove { fromOffsets, toOffset in
-                viewModel.items.move(fromOffsets: fromOffsets, toOffset: toOffset)
-            }
-        }
-        .navigationDestination(for: Item.self) { item in
-            ItemView(item: item)
-                .navigationTitle(item.itemTitle)
-        }
-        .toolbar {
-            ToolbarItemGroup {
-                Button {
-                    withAnimation {
-                        viewModel.items.insert(Item(), at: 0)
-                    }
-                } label: {
-                    Label("Add", systemImage: "plus")
-                }
-            }
-        }
-    }
-}
-
-struct ItemView : View {
-    @State var item: Item
-    @Environment(ViewModel.self) var viewModel: ViewModel
-    @Environment(\.dismiss) var dismiss
-
-    var body: some View {
-        Form {
-            TextField("Title", text: $item.title)
-                .textFieldStyle(.roundedBorder)
-            Toggle("Favorite", isOn: $item.favorite)
-            DatePicker("Date", selection: $item.date)
-            Text("Notes").font(.title3)
-            TextEditor(text: $item.notes)
-                .border(Color.secondary, width: 1.0)
-        }
-        .navigationBarBackButtonHidden()
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
-                    dismiss()
-                }
-            }
-            ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {
-                    viewModel.save(item: item)
-                    dismiss()
-                }
-                .disabled(!viewModel.isUpdated(item))
-            }
-        }
     }
 }
 
@@ -160,6 +72,7 @@ public struct SettingsView : View {
     }
     @Binding var tab: ContentTab
     @Binding var welcomeName: String
+    @State var gotoSettings = false
 
     public var body: some View {
         Form {
@@ -173,21 +86,55 @@ public struct SettingsView : View {
                 PlatformHeartView()
                 Text("Powered by [Skip](https://skip.dev)")
             }
-            VStack(spacing: 20) {
-                Button("Glass") {
-                    tab = .welcome
-                }
-                .buttonStyle(.glass)
-                
-                Button("GlassProminent") {
+                ZStack {
+                    Image(systemName: "gearshape")
+                        .resizable()
+                        .frame(width: 150, height: 150, alignment: .center)
                     
-                }
-                .tint(.yellow)
-                .foregroundStyle(.red)
-                .buttonStyle(.glassProminent)
+                    VStack(spacing: 20) {
+                        HStack {
+                            Button("Glass") {
+                                tab = .welcome
+                            }
+                            .buttonStyle(.glass)
+                            
+                            Button("Go to Settings") {
+                                gotoSettings = true
+                            }
+                            .buttonStyle(.glassProminent)
+                        }
+                        HStack {
+                            
+                            Button {
+                                tab = .welcome
+                            } label: {
+                                Image(systemName: "chevron.left")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 30, height: 30)
+
+                            }
+                            .buttonStyle(.glass)
+                            
+                            Button {
+                                
+                            } label: {
+                                VStack(spacing: 0) {
+                                    Image(systemName: "gearshape.fill")
+                                    Text("gearshape.fill")
+                                        .font(.caption)
+                                }
+                            }
+                            .buttonStyle(.glassProminent)
+                        }
+                    }
+                    .navigationDestination(isPresented: $gotoSettings) {
+                        SettingsView(welcomeName: $welcomeName, tab: $tab)
+                            .navigationTitle(welcomeName)
+                    }
             }
-            .background(.gray)
         }
+        .navigationTitle("Dhruvs asdasd")
     }
 }
 

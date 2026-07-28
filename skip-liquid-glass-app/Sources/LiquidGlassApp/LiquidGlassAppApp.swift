@@ -13,7 +13,9 @@ import SwiftUI
     }
 
     public var body: some View {
-        LiteContentView()
+        NavigationStack {
+            LiteContentView()
+        }
     }
 }
 
