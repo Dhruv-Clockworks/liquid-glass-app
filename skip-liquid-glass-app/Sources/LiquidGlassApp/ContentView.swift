@@ -17,6 +17,7 @@ public struct LiteContentView: View {
     @AppStorage("name") var welcomeName = "Skipper"
     @AppStorage("appearance") var appearance = ""
     @State var viewModel = ViewModel()
+    @State var isDarkMode: Bool = true
 
     public var body: some View {
                 
@@ -30,7 +31,34 @@ public struct LiteContentView: View {
                 SettingsView(welcomeName: $welcomeName, tab: $tab)
                         .navigationTitle("Settings")
             }
+            Tab("Home", systemImage: "house.fill", value: ContentTab.home) {
+                TestView(isDarkMode: $isDarkMode)
+                    .navigationTitle("CAsss")
+            }
         }
+//        .preferredColorScheme(scheme)
+    }
+}
+
+public struct TestView: View {
+
+    @State private var isPresented = false
+    @Binding var isDarkMode: Bool
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
+
+    public var body: some View {
+        Button("Show Sheet") {
+            isPresented = true
+        }
+        .onAppear {
+            isDarkMode = colorScheme == .dark
+        }
+        .sheet(isPresented: $isPresented) {
+            List {
+                Toggle("Dark Mode", isOn: $isDarkMode)
+            }
+        }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
 
@@ -41,14 +69,17 @@ public struct WelcomeView : View {
     }
     @State var heartBeating = false
     @Binding var welcomeName: String
+    @Environment(\.colorScheme) var scheme: ColorScheme
 
    public var body: some View {
        ZStack {
-           Color.green
+           Color("dhruv")
+           
            VStack(spacing: 10) {
                Text("Hello [\(welcomeName)](https://skip.dev)!")
                TextField("Enter Value", text: $welcomeName)
                    .padding()
+               
                Image(systemName: "heart.fill")
                    .foregroundStyle(.red)
                    .scaleEffect(heartBeating ? 1.5 : 1.0)
@@ -60,8 +91,8 @@ public struct WelcomeView : View {
            }
            .font(.largeTitle)
        }
-//       .navigationSubtitle("sub title asdasdasd")
        .ignoresSafeArea()
+       .preferredColorScheme(scheme)
     }
 }
 
@@ -86,55 +117,60 @@ public struct SettingsView : View {
                 PlatformHeartView()
                 Text("Powered by [Skip](https://skip.dev)")
             }
-                ZStack {
-                    Image(systemName: "gearshape")
-                        .resizable()
-                        .frame(width: 150, height: 150, alignment: .center)
-                    
-                    VStack(spacing: 20) {
-                        HStack {
-                            Button("Glass") {
-                                tab = .welcome
-                            }
-                            .buttonStyle(.glass)
+            ZStack {
+                Image(systemName: "chevron.left")
+                    .resizable()
+                    .frame(width: 200, height: 300, alignment: .center)
+                    .foregroundStyle(.green)
+                
+                VStack(spacing: 5) {
+                    HStack {
+                        Button {
                             
-                            Button("Go to Settings") {
-                                gotoSettings = true
-                            }
-                            .buttonStyle(.glassProminent)
+                        } label: {
+                            Text("Glass Design")
+                            .padding()
                         }
-                        HStack {
-                            
-                            Button {
-                                tab = .welcome
-                            } label: {
-                                Image(systemName: "chevron.left")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 30, height: 30)
+                        .buttonStyle(.glass)
+                        
+                    }
+                    Button("Go to Settings") {
+                        gotoSettings = true
+                    }
+                    .buttonStyle(.glassProminent)
 
-                            }
-                            .buttonStyle(.glass)
+                    Button {
+                        tab = .welcome
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 30, height: 30)
+                        
+                    }
+                    .buttonStyle(.glass)
+                    
+                        
+                        Button {
                             
-                            Button {
-                                
-                            } label: {
-                                VStack(spacing: 0) {
-                                    Image(systemName: "gearshape.fill")
-                                    Text("gearshape.fill")
-                                        .font(.caption)
-                                }
+                        } label: {
+                            VStack(spacing: 0) {
+                                Image(systemName: "gearshape.fill")
+                                Text("gearshape.fill")
+                                    .font(.caption)
                             }
-                            .buttonStyle(.glassProminent)
                         }
-                    }
-                    .navigationDestination(isPresented: $gotoSettings) {
-                        SettingsView(welcomeName: $welcomeName, tab: $tab)
-                            .navigationTitle(welcomeName)
-                    }
+                        .buttonStyle(.glassProminent)
+                    
+                }
+                .navigationDestination(isPresented: $gotoSettings) {
+                    SettingsView(welcomeName: $welcomeName, tab: $tab)
+                        .navigationTitle(welcomeName)
+                }
             }
         }
-        .navigationTitle("Dhruvs asdasd")
+        .navigationTitle("Navigation Title")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
@@ -160,3 +196,10 @@ struct HeartComposer : ContentComposer {
 }
 #endif
 
+#if !SKIP
+#Preview {
+    NavigationStack {
+        LiteContentView()
+    }
+}
+#endif

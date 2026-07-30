@@ -11,10 +11,11 @@ import SwiftUI
 /* SKIP @bridge */public struct LiquidGlassAppRootView : View {
     /* SKIP @bridge */public init() {
     }
-
+    @Environment(\.colorScheme) var scheme: ColorScheme
     public var body: some View {
         NavigationStack {
             LiteContentView()
+                .preferredColorScheme(scheme)
         }
     }
 }
